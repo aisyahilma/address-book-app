@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MailBook</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome Icons for Modal and Table -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- Additional Meta Tags for SEO and Accessibility -->
+    <meta
+      name="description"
+      content="Address book web application for managing contacts with ease."
+    />
+    <meta
+      name="keywords"
+      content="address book, contacts, manage addresses, email, phone"
+    />
+  </head>
+
+  <body class="bg-gray-100 font-sans">
+    <!-- Full-screen background for the modal -->
+    <div
+      id="fullscreen-div"
+      class="hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-20 z-10"
+    ></div>
+
+    <!-- Modal for adding address -->
+    <form
+      class="modal hidden fixed top-10 left-1/2 transform -translate-x-1/2 bg-white shadow-lg rounded-lg w-full max-w-lg z-20"
+      id="modal"
+    >
+      <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-head bg-red-500 p-4 text-white relative">
+          <h3 id="modal-title" class="text-lg font-semibold">Add Address</h3>
+          <button
+            type="button"
+            id="close-btn"
+            aria-label="Close modal"
+            class="absolute top-3 right-3 text-xl text-gray-500 hover:text-white"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-main p-6">
+          <!-- Address Name -->
+          <div class="modal-row mb-4">
+            <label
+              for="addr_ing_name"
+              class="block text-gray-700 font-semibold mb-2"
+              >How should your mail be addressed?</label
+            >
+            <input
+              type="text"
+              id="addr_ing_name"
+              placeholder="E.g. The Smith Family"
+              class="form-input w-full border border-gray-300 rounded-lg p-2"
+              name="addr_ing_name"
+              aria-label="Addressing Name"
+            />
+          </div>
+
+          <!-- First and Last Name -->
+          <div class="modal-row grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label
+                for="first_name"
+                class="block text-gray-700 font-semibold mb-2"
+                >First Name</label
+              >
+              <input
+                type="text"
+                id="first_name"
+                placeholder="First Name"
+                class="form-input w-full border border-gray-300 rounded-lg p-2"
+                name="first_name"
+                aria-label="First Name"
+              />
+            </div>
+            <div>
+              <label
+                for="last_name"
+                class="block text-gray-700 font-semibold mb-2"
+                >Last Name</label
+              >
+              <input
+                type="text"
+                id="last_name"
+                placeholder="Last Name"
+                class="form-input w-full border border-gray-300 rounded-lg p-2"
+                name="last_name"
+                aria-label="Last Name"
+              />
+            </div>
+          </div>
+
+          <!-- Email and Phone Number -->
+          <div class="modal-row grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label for="email" class="block text-gray-700 font-semibold mb-2"
+                >Email</label
+              >
+              <input
+                type="email"
+                id="email"
+                placeholder="Email Address"
+                class="form-input w-full border border-gray-300 rounded-lg p-2"
+                name="email"
+                aria-label="Email"
+              />
+            </div>
+            <div>
+              <label for="phone" class="block text-gray-700 font-semibold mb-2"
+                >Phone</label
+              >
+              <input
+                type="text"
+                id="phone"
+                placeholder="Phone Number"
+                class="form-input w-full border border-gray-300 rounded-lg p-2"
+                name="phone"
+                aria-label="Phone Number"
+              />
+            </div>
+          </div>
+
+          <!-- Street Address and Postal Code -->
+          <div class="modal-row grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label
+                for="street_addr"
+                class="block text-gray-700 font-semibold mb-2"
+                >Street Address</label
+              >
+              <input
+                type="text"
+                id="street_addr"
+                placeholder="Street address, apartment, house number, etc."
+                class="form-input w-full border border-gray-300 rounded-lg p-2"
+                name="street_addr"
+                aria-label="Street Address"
+              />
+            </div>
+            <div>
+              <label
+                for="postal_code"
+                class="block text-gray-700 font-semibold mb-2"
+                >Postal Code</label
+              >
+              <input
+                type="text"
+                id="postal_code"
+                placeholder="Postal Code"
+                class="form-input w-full border border-gray-300 rounded-lg p-2"
+                name="postal_code"
+                aria-label="Postal Code"
+              />
+            </div>
+          </div>
+
+          <!-- City and Country -->
+          <div class="modal-row grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label for="city" class="block text-gray-700 font-semibold mb-2"
+                >City</label
+              >
+              <input
+                type="text"
+                id="city"
+                placeholder="City Name"
+                class="form-input w-full border border-gray-300 rounded-lg p-2"
+                name="city"
+                aria-label="City"
+              />
+            </div>
+            <div>
+              <label
+                for="country-list"
+                class="block text-gray-700 font-semibold mb-2"
+                >Country</label
+              >
+              <select
+                id="country-list"
+                name="country"
+                class="form-select w-full border border-gray-300 rounded-lg p-2"
+              >
+                <!-- Dynamically populate country list here -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Labels (e.g. Family, Friends, Colleagues) -->
+          <div class="modal-row mb-4">
+            <label for="labels" class="block text-gray-700 font-semibold mb-2"
+              >Labels</label
+            >
+            <select
+              id="labels"
+              name="labels"
+              class="form-select w-full border border-gray-300 rounded-lg p-2"
+            >
+              <option value="Family">Family</option>
+              <option value="Friends">Friends</option>
+              <option value="Colleagues">Colleagues</option>
+            </select>
+          </div>
+
+          <!-- Modal Footer: Save Button -->
+          <div class="modal-row" id="modal-btns">
+            <button
+              type="submit"
+              id="save-btn"
+              class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600"
+              aria-label="Save Address"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!-- Address Book Main Section -->
+    <div class="addr-book p-6 mx-auto max-w-4xl mt-8" id="addr-book">
+      <div class="addr-book-content bg-white p-6 rounded-lg shadow-md">
+        <!-- Address Book Header -->
+        <div
+          class="addr-book-head flex items-center justify-center text-center mb-8"
+        >
+          <i class="fa-solid fa-address-book fa-2x text-red-500 mr-4"></i>
+          <h2 class="text-3xl font-semibold text-gray-900">
+            Address<span class="text-red-500">Book</span>
+          </h2>
+        </div>
+
+        <!-- Add Address Button -->
+        <div class="addr-book-top mb-6 text-right">
+          <button
+            type="button"
+            class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600"
+            id="add-btn"
+            aria-label="Add New Address"
+          >
+            <span><i class="fas fa-plus mr-2"></i> Add address</span>
+          </button>
+        </div>
+
+        <!-- Address Book List Table -->
+        <div class="addr-book-list" id="addr-book-list">
+          <table class="addr-table table-auto w-full text-left border-collapse">
+            <thead class="border-b">
+              <tr>
+                <th class="pb-2">ID</th>
+                <th class="pb-2">Address</th>
+                <th class="pb-2">Labels</th>
+                <th class="pb-2">By Name</th>
+                <th class="pb-2">Phone</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Address list will be dynamically generated here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="app.js"></script>
+  </body>
+</html>
