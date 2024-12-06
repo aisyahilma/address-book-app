@@ -10,5 +10,4 @@ This is a simple Address Book application where users can manage their contacts 
 
 ## Tech Stack
 - Frontend: HTML, CSS, JavaScript
-- Backend: Node.js with Express (or any backend language of your choice)
-- Database: MongoDB (or any database of your choice)
+- Backend: Node.js with Express 
