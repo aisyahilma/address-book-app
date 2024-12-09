@@ -37,6 +37,13 @@ function updateContactList() {
   });
 }
 
+function showContact() {}
+console.log("\nContact List:");
+contacts.forEach((contact) => {
+  const outputContact = `${contact.fullName} (${contact.phone}) - ${contact.email} - ${contact.company}`;
+  console.log(outputContact);
+});
+
 // Fungsi untuk menampilkan daftar kontak
 function displayContacts() {
   console.log("\nContact List:");
