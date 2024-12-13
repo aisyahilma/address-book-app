@@ -3,48 +3,79 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Complete Address Form</title>
+    <title>Address Book</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <h1>Complete Address Form</h1>
-    <form id="address-form">
-      <label for="name">Full Name:</label><br />
-      <input type="text" id="name" name="name" required /><br /><br />
+    <header>
+      <h1>Address Book</h1>
+      <p>Manage your contacts with ease.</p>
+    </header>
 
-      <label for="street">Street Address:</label><br />
-      <input type="text" id="street" name="street" required /><br /><br />
+    <main>
+      <section>
+        <form id="search-contacts-form">
+          <label for="search-keyword" hidden>Keyword</label>
+          <input
+            id="search-keyword"
+            name="q"
+            type="search"
+            placeholder="Search contacts"
+          />
+          <button type="submit">Search</button>
+        </form>
+      </section>
 
-      <label for="city">City:</label><br />
-      <input type="text" id="city" name="city" required /><br /><br />
+      <hr />
 
-      <label for="province">State/Province:</label><br />
-      <input type="text" id="province" name="province" required /><br /><br />
+      <section>
+        <form id="add-contact-form">
+          <div>
+            <label for="full-name">Full Name:</label>
+            <input type="text" id="full-name" name="full-name" required />
+          </div>
+          <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          <div>
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone" required />
+          </div>
+          <div>
+            <label for="birthday">Birthday:</label>
+            <input type="date" id="birthday" name="birthday" required />
+          </div>
+          <div>
+            <label for="street">Street Address:</label>
+            <input type="text" id="street" name="street" required />
+          </div>
+          <div>
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" required />
+          </div>
+          <div>
+            <label for="province">Province:</label>
+            <input type="text" id="province" name="province" required />
+          </div>
+          <div>
+            <label for="postal-code">Postal Code:</label>
+            <input type="text" id="postal-code" name="postal-code" required />
+          </div>
+          <div>
+            <button type="submit">Add Contact</button>
+          </div>
+        </form>
+      </section>
 
-      <label for="postal-code">Postal Code:</label><br />
-      <input
-        type="text"
-        id="postal-code"
-        name="postal-code"
-        required
-      /><br /><br />
+      <hr />
 
-      <button type="submit">Submit</button>
-    </form>
-    <hr />
-    <hr />
-    <h2>Search Contact</h2>
-    <input type="text" id="search-name" placeholder="Enter name to search" />
-    <button id="search-button">Search</button>
-    <div id="search-results"></div>
-
-    <hr />
-    <h2>Delete Contact</h2>
-    <input type="number" id="delete-id" placeholder="Enter ID to delete" />
-    <button id="delete-button">Delete</button>
-    <div id="delete-message"></div>
-
-    <h2>Contact List</h2>
-    <ul id="contact-list"></ul>
+      <section>
+        <ul id="contacts">
+          <!-- Contacts will be listed here -->
+        </ul>
+      </section>
+    </main>
 
     <script src="index.js"></script>
   </body>

@@ -1,74 +1,17 @@
-// Data kontak awal
-const contacts = [
-  {
-    id: 1,
-    fullName: "Aisyah Ilma",
-    street: "Jl. Merdeka No. 123",
-    city: "Jakarta",
-    province: "DKI Jakarta",
-    postalCode: "10110",
-  },
-  {
-    id: 2,
-    fullName: "Ahmad Yusuf",
-    street: "Jl. Sudirman No. 45",
-    city: "Bandung",
-    province: "Jawa Barat",
-    postalCode: "40286",
-  },
-  {
-    id: 3,
-    fullName: "Fatimah Zahra",
-    street: "Jl. Gajah Mada No. 67",
-    city: "Surabaya",
-    province: "Jawa Timur",
-    postalCode: "60175",
-  },
-];
+// Array untuk menyimpan kontak
+const contacts = [];
 
-function updateContactList() {
-  const contactListElement = document.getElementById("contact-list");
-  contactListElement.innerHTML = ""; // Hapus daftar kontak sebelumnya
-
-  contacts.forEach((contact) => {
-    const listItem = document.createElement("li");
-    listItem.textContent = `${contact.fullName} - ${contact.street}, ${contact.city}, ${contact.province}, ${contact.postalCode}`;
-    contactListElement.appendChild(listItem);
-  });
-}
-
-function showContact() {}
-console.log("\nContact List:");
-contacts.forEach((contact) => {
-  const outputContact = `${contact.fullName} (${contact.phone}) - ${contact.email} - ${contact.company}`;
-  console.log(outputContact);
-});
-
-// Fungsi untuk menampilkan daftar kontak
-function displayContacts() {
-  console.log("\nContact List:");
-  contacts.forEach((contact, index) => {
-    console.log(`Contact ${index + 1}:`);
-    console.log(`  ID: ${contact.id}`);
-    console.log(`  Full Name: ${contact.fullName}`);
-    console.log(`  Street Address: ${contact.street}`);
-    console.log(`  City: ${contact.city}`);
-    console.log(`  Province: ${contact.province}`);
-    console.log(`  Postal Code: ${contact.postalCode}`);
-  });
-}
-
-// Menampilkan data awal
-displayContacts();
-
-// Event listener untuk form submit
+// Menangani penambahan kontak
 document
-  .getElementById("address-form")
+  .getElementById("add-contact-form")
   .addEventListener("submit", function (e) {
-    e.preventDefault(); // Mencegah reload halaman setelah submit
+    e.preventDefault();
 
-    // Mengambil nilai
-    const name = document.getElementById("name").value;
+    // Mengambil data dari form
+    const name = document.getElementById("full-name").value;
+    const email = document.getElementById("email").value;
+    const phone = document.getElementById("phone").value;
+    const birthday = document.getElementById("birthday").value;
     const street = document.getElementById("street").value;
     const city = document.getElementById("city").value;
     const province = document.getElementById("province").value;
@@ -82,6 +25,9 @@ document
     const newContact = {
       id: newId,
       fullName: name,
+      email: email,
+      phone: phone,
+      birthday: birthday,
       street: street,
       city: city,
       province: province,
@@ -91,50 +37,64 @@ document
 
     // Menampilkan data baru di konsol
     console.log("\nNew Contact Added:");
-    console.log(`  ID: ${newContact.id}`);
-    console.log(`  Full Name: ${newContact.fullName}`);
-    console.log(`  Street Address: ${newContact.street}`);
-    console.log(`  City: ${newContact.city}`);
-    console.log(`  Province: ${newContact.province}`);
-    console.log(`  Postal Code: ${newContact.postalCode}`);
+    console.log(newContact);
 
     // Menampilkan daftar kontak terkini
     displayContacts();
 
     // Menampilkan alert sukses
     alert(
-      `Data submitted successfully!\n\nName: ${name}\nStreet: ${street}\nCity: ${city}\nProvince: ${province}\nPostal Code: ${postalCode}`
+      `Contact added successfully!\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nBirthday: ${birthday}\nStreet: ${street}\nCity: ${city}\nProvince: ${province}\nPostal Code: ${postalCode}`
     );
+
+    // Reset form setelah submit
+    this.reset();
   });
 
-// Fungsi untuk mencari kontak berdasarkan nama
-function searchContactByName(name) {
-  const result = contacts.filter((contact) =>
-    contact.fullName.toLowerCase().includes(name.toLowerCase())
-  );
-  if (result.length > 0) {
-    console.log("\nSearch Results:");
-    result.forEach((contact) => {
-      console.log(`  ID: ${contact.id}`);
-      console.log(`  Full Name: ${contact.fullName}`);
-      console.log(`  Street Address: ${contact.street}`);
-      console.log(`  City: ${contact.city}`);
-      console.log(`  Province: ${contact.province}`);
-      console.log(`  Postal Code: ${contact.postalCode}`);
-    });
-  } else {
-    console.log(`\nNo contact found with the name "${name}".`);
-  }
+// Fungsi untuk menampilkan daftar kontak
+function displayContacts() {
+  const contactsList = document.getElementById("contacts");
+  contactsList.innerHTML = "";
+
+  contacts.forEach((contact) => {
+    const listItem = document.createElement("li");
+    listItem.innerHTML = `
+      <strong>${contact.fullName}</strong> <br>
+      Email: ${contact.email} <br>
+      Phone: ${contact.phone} <br>
+      Birthday: ${new Date(contact.birthday).toLocaleDateString()} <br>
+      Address: ${contact.street}, ${contact.city}, ${contact.province}, ${
+      contact.postalCode
+    }
+    `;
+    contactsList.appendChild(listItem);
+  });
 }
 
-// Fungsi untuk menghapus kontak berdasarkan ID
-function deleteContactById(id) {
-  const index = contacts.findIndex((contact) => contact.id === id);
-  if (index !== -1) {
-    console.log(`\nContact with ID ${id} has been deleted.`);
-    contacts.splice(index, 1);
-    displayContacts();
-  } else {
-    console.log(`\nNo contact found with ID ${id}.`);
-  }
-}
+// Menangani pencarian kontak
+document
+  .getElementById("search-contacts-form")
+  .addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const searchKeyword = document
+      .getElementById("search-keyword")
+      .value.trim();
+    if (!searchKeyword) {
+      alert("Please enter a name to search.");
+      return;
+    }
+
+    const result = contacts.filter((contact) =>
+      contact.fullName.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+
+    if (result.length > 0) {
+      console.log("\nSearch Results:");
+      result.forEach((contact) => {
+        console.log(contact);
+      });
+    } else {
+      console.log(`\nNo contact found with the name "${searchKeyword}".`);
+    }
+  });
