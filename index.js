@@ -1,151 +1,154 @@
-// Array to store contacts
-let contacts = [];
+let contacts = []; // To store contacts
 
-// Function to save contacts to localStorage
-function saveContactsToStorage(contacts) {
+// Elements
+const contactList = document.getElementById("contactList");
+const searchInput = document.getElementById("searchInput");
+const addContactBtn = document.getElementById("addContactBtn");
+const contactModal = document.getElementById("contactModal");
+const closeModal = document.getElementById("closeModal");
+const contactForm = document.getElementById("contactForm");
+const modalTitle = document.getElementById("modalTitle");
+
+// Form Inputs
+const contactId = document.getElementById("contactId");
+const fullName = document.getElementById("fullName");
+const email = document.getElementById("email");
+const phone = document.getElementById("phone");
+const birthday = document.getElementById("birthday");
+const street = document.getElementById("street");
+const city = document.getElementById("city");
+const province = document.getElementById("province");
+const postalCode = document.getElementById("postalCode");
+const isFavorited = document.getElementById("isFavorited");
+
+// Helper Functions
+function saveContactsToStorage() {
   localStorage.setItem("stored-contacts", JSON.stringify(contacts));
-  console.log("\nContacts saved to localStorage.\n");
 }
 
-// Function to retrieve contacts from localStorage
 function loadContactsFromStorage() {
   const storedContacts =
     JSON.parse(localStorage.getItem("stored-contacts")) || [];
-  console.log("\nContacts loaded from localStorage.\n");
-  return storedContacts;
+  contacts = storedContacts;
+  renderContacts();
 }
 
-// Function to generate a new ID
-function generateId(contacts) {
-  return contacts.length > 0 ? contacts[contacts.length - 1].id + 1 : 1;
-}
+function renderContacts(filter = "") {
+  contactList.innerHTML = "";
 
-// Function to display the contact list
-function renderContacts(contacts) {
-  if (contacts.length === 0) {
-    console.log("\nNo contacts available.\n");
+  const filteredContacts = contacts.filter((contact) =>
+    contact.fullName.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  if (filteredContacts.length === 0) {
+    contactList.innerHTML = "<p>No contacts found.</p>";
     return;
   }
 
-  console.log("\n=== Contact List ===");
-  contacts.forEach((contact) => {
-    console.log(`
-      ID: ${contact.id}
-      Name: ${contact.fullName} ${contact.isFavorited ? "⭐" : ""}
-      Email: ${contact.email}
-      Phone: ${contact.phone}
-      Birthday: ${new Date(contact.birthday).toLocaleDateString()}
-      Address: ${contact.street}, ${contact.city}, ${contact.province}, ${
-      contact.postalCode
-    }
-    `);
+  filteredContacts.forEach((contact) => {
+    const contactCard = document.createElement("div");
+    contactCard.className = `contact-card ${
+      contact.isFavorited ? "favorite" : ""
+    }`;
+    contactCard.innerHTML = `
+      <div>
+        <strong>${contact.fullName}</strong>
+        <p>${contact.email} | ${contact.phone}</p>
+        <p>${contact.street}, ${contact.city}, ${contact.province}, ${contact.postalCode}</p>
+      </div>
+      <div class="contact-actions">
+        <button onclick="editContact(${contact.id})">Edit</button>
+        <button onclick="deleteContact(${contact.id})">Delete</button>
+      </div>
+    `;
+    contactList.appendChild(contactCard);
   });
 }
 
-// Function to add a new contact
-function addContact(newContactInput) {
+function clearForm() {
+  contactId.value = "";
+  fullName.value = "";
+  email.value = "";
+  phone.value = "";
+  birthday.value = "";
+  street.value = "";
+  city.value = "";
+  province.value = "";
+  postalCode.value = "";
+  isFavorited.checked = false;
+}
+
+// Event Listeners
+addContactBtn.addEventListener("click", () => {
+  clearForm();
+  modalTitle.textContent = "Add Contact";
+  contactModal.classList.remove("hidden");
+});
+
+closeModal.addEventListener("click", () => {
+  contactModal.classList.add("hidden");
+});
+
+searchInput.addEventListener("input", (e) => {
+  renderContacts(e.target.value);
+});
+
+contactForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
   const newContact = {
-    id: generateId(contacts),
-    fullName: newContactInput.fullName,
-    email: newContactInput.email,
-    phone: newContactInput.phone,
-    birthday: newContactInput.birthday,
-    street: newContactInput.street,
-    city: newContactInput.city,
-    province: newContactInput.province,
-    postalCode: newContactInput.postalCode,
-    isFavorited: newContactInput.isFavorited || false,
+    id: contactId.value ? Number(contactId.value) : Date.now(),
+    fullName: fullName.value,
+    email: email.value,
+    phone: phone.value,
+    birthday: birthday.value,
+    street: street.value,
+    city: city.value,
+    province: province.value,
+    postalCode: postalCode.value,
+    isFavorited: isFavorited.checked,
   };
 
-  contacts.push(newContact);
-  saveContactsToStorage(contacts);
-  console.log(`\nContact "${newContact.fullName}" added successfully!\n`);
-  renderContacts(contacts);
-}
-
-// Function to delete a contact
-function deleteContact(contactId) {
-  contacts = contacts.filter((contact) => contact.id !== contactId);
-  saveContactsToStorage(contacts);
-  console.log(`\nContact with ID ${contactId} has been deleted.\n`);
-  renderContacts(contacts);
-}
-
-// Function to update a contact
-function updateContact(contactId, updatedContactInput) {
-  contacts = contacts.map((contact) => {
-    if (contact.id === contactId) {
-      return {
-        ...contact,
-        ...updatedContactInput,
-        birthday: updatedContactInput.birthday
-          ? new Date(updatedContactInput.birthday)
-          : contact.birthday,
-      };
-    }
-    return contact;
-  });
-
-  saveContactsToStorage(contacts);
-  console.log(`\nContact with ID ${contactId} has been updated.\n`);
-  renderContacts(contacts);
-}
-
-// Function to search for contacts by name
-function searchContacts(searchKeyword) {
-  const result = contacts.filter((contact) =>
-    contact.fullName.toLowerCase().includes(searchKeyword.toLowerCase())
-  );
-
-  if (result.length > 0) {
-    console.log(`\n=== Search Results for "${searchKeyword}" ===`);
-    renderContacts(result);
+  if (contactId.value) {
+    // Update existing contact
+    contacts = contacts.map((contact) =>
+      contact.id === Number(contactId.value) ? newContact : contact
+    );
   } else {
-    console.log(`\nNo contact found with the name "${searchKeyword}".\n`);
+    // Add new contact
+    contacts.push(newContact);
   }
+
+  saveContactsToStorage();
+  renderContacts();
+  contactModal.classList.add("hidden");
+});
+
+// CRUD Functions
+function editContact(id) {
+  const contact = contacts.find((c) => c.id === id);
+  if (!contact) return;
+
+  contactId.value = contact.id;
+  fullName.value = contact.fullName;
+  email.value = contact.email;
+  phone.value = contact.phone;
+  birthday.value = contact.birthday;
+  street.value = contact.street;
+  city.value = contact.city;
+  province.value = contact.province;
+  postalCode.value = contact.postalCode;
+  isFavorited.checked = contact.isFavorited;
+
+  modalTitle.textContent = "Edit Contact";
+  contactModal.classList.remove("hidden");
 }
 
-// Main function
-function main() {
-  console.log("\n=== Loading Contacts from Local Storage ===");
-  contacts = loadContactsFromStorage();
-
-  console.log("\n=== Adding New Contacts ===");
-  addContact({
-    fullName: "John Doe",
-    email: "john@example.com",
-    phone: "123456789",
-    birthday: "1990-01-01",
-    street: "123 Main St",
-    city: "Anytown",
-    province: "Anywhere",
-    postalCode: "12345",
-    isFavorited: true,
-  });
-
-  addContact({
-    fullName: "Jane Smith",
-    email: "jane@example.com",
-    phone: "987654321",
-    birthday: "1985-05-15",
-    street: "456 Elm St",
-    city: "Othertown",
-    province: "Somewhere",
-    postalCode: "67890",
-  });
-
-  console.log("\n=== Searching for a Contact ===");
-  searchContacts("Jane");
-
-  console.log("\n=== Updating a Contact ===");
-  updateContact(1, { fullName: "Johnathan Doe", phone: "111222333" });
-
-  console.log("\n=== Deleting a Contact ===");
-  deleteContact(2);
-
-  console.log("\n=== Final Contact List ===");
-  renderContacts(contacts);
+function deleteContact(id) {
+  contacts = contacts.filter((contact) => contact.id !== id);
+  saveContactsToStorage();
+  renderContacts();
 }
 
-// Run the main function
-main();
+// Initialize
+loadContactsFromStorage();
